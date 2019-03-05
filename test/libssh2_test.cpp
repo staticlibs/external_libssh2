@@ -21,6 +21,13 @@
  * Created on February 10, 2015, 11:25 AM
  */
 
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <cctype>
+#include <iostream>
+#include <string>
+
 #include "libssh2_config.h"
 #include "libssh2.h"
 
@@ -34,12 +41,8 @@
 #include <unistd.h>
 #endif
 
-#include <cerrno>
-#include <cstdio>
-#include <cstring>
-#include <cctype>
-#include <iostream>
-#include <string>
+#include <sys/types.h>
+#include <sys/socket.h>
 
 #include "staticlib/config/assert.hpp"
 #include "staticlib/io.hpp"
