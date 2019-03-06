@@ -1,0 +1,97 @@
+# Copyright 2019, alex at staticlibs.net
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+language: cpp
+
+sudo: false
+
+os:
+  - linux
+  - osx
+
+addons:
+  apt:
+    packages:
+      - libssl-dev
+      - zlib1g-dev 
+
+before_install:
+  - export CC=
+  - export CXX=
+
+install:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+    `# Android` ;
+    git clone https://github.com/staticlibs/android-ndk-r9d-arm-linux-androideabi-4.8.git ../android-ndk ;
+    fi
+
+before_script:
+  - git submodule update --init --recursive
+  - cd ..
+# mac and android
+  - git clone https://github.com/staticlibs/external_openssl.git
+  - git clone https://github.com/staticlibs/lookaside_openssl.git
+  - git clone https://github.com/staticlibs/external_zlib.git
+  - git clone https://github.com/staticlibs/lookaside_zlib.git
+  - git clone https://github.com/staticlibs/lookaside_libssh2.git
+# all platforms
+  - git clone https://github.com/staticlibs/cmake.git
+  - git clone https://github.com/staticlibs/staticlib_config.git
+
+script:
+  - set -e
+  - mkdir build-standalone
+  - mkdir build
+
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+
+    `# macOS` ;
+    set +e ;
+    pushd build-standalone ;
+    set -e ;
+    cmake ../external_libssh2 ;
+    make ;
+    set +e;
+    popd ;
+    pushd build ;
+    set -e ;
+    cmake ../external_libssh2/test -DSTATICLIB_TOOLCHAIN=macosx_amd64_clang -DCMAKE_BUILD_TYPE=Release ;
+    make all test ;
+
+    fi
+
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+
+    `# Ubuntu` ;
+    lsb_release -a ;
+    pushd build-standalone ;
+    cmake ../external_libssh2 ;
+    make ;
+    popd ;
+    pushd build ;
+    cmake ../external_libssh2/test -DCMAKE_BUILD_TYPE=Release ;
+    make ;
+    popd ;
+
+    `# Android` ;
+    mkdir build-android ;
+    pushd build-android ;
+    cmake ../external_libssh2/test -DCMAKE_BUILD_TYPE=Release -DSTATICLIB_TOOLCHAIN=android_armeabi_gcc -DANDROID_TOOLCHAIN_DIR=`pwd`/../android-ndk ;
+    make ;
+
+    fi
+
+notifications:
+  email:
+    on_success: always
