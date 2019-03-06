@@ -48,6 +48,8 @@ before_script:
 # all platforms
   - git clone https://github.com/staticlibs/cmake.git
   - git clone https://github.com/staticlibs/staticlib_config.git
+  - git clone https://github.com/staticlibs/staticlib_support.git
+  - git clone https://github.com/staticlibs/staticlib_io.git
 
 script:
   - set -e
