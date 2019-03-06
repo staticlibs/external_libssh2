@@ -1,1 +1,1 @@
-https://github.com/staticlibs/lookaside_libssh2/tree/0ee0d783223d7a4043ba1cf74cbe072f6ff044ec
+https://github.com/staticlibs/lookaside_libssh2/tree/cd99f8c54ae18c38463170df30a24067e3cef4d4
