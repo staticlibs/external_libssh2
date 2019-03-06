@@ -68,15 +68,13 @@ int main() {
     auto err_init = libssh2_init(0);
     slassert(0 == err_init);
 
-// disable test on windows
-#ifdef STATICLIB_WINDOWS
-    bool win = true;
-    if (win) {
-        std::cout << "Test disabled on windows" << std::endl;
+    // flip me to enable connection test
+    bool disabled = true;
+    if (disabled) {
+        std::cout << "Test is disabled" << std::endl;
         libssh2_exit();
         return 0;
     }
-#endif
 
     /* Ultra basic "connect to port 22 on localhost"
      * Your code is responsible for creating the socket establishing the
@@ -85,7 +83,7 @@ int main() {
     auto sock = socket(AF_INET, SOCK_STREAM, 0);
 
     // 127.0.0.1
-    unsigned long hostaddr = htonl(0x7f000001);
+    unsigned long hostaddr = htonl(0xc0a80103);
     struct sockaddr_in sin;
     std::memset(std::addressof(sin), '\0', sizeof(struct sockaddr_in));
     sin.sin_family = AF_INET;
