@@ -21,6 +21,17 @@
  * Created on February 10, 2015, 11:25 AM
  */
 
+#include "staticlib/config.hpp"
+
+#ifdef STATICLIB_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+#else
+#include <sys/types.h>
+#include <sys/socket.h>
+#endif
+
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
@@ -41,18 +52,15 @@
 #include <unistd.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/socket.h>
-
 #include "staticlib/config/assert.hpp"
 #include "staticlib/io.hpp"
 #include "staticlib/support.hpp"
 
 int main() {
 
-#ifdef WIN32
+#ifdef STATICLIB_WINDOWS
     WSADATA wsadata;
-    std::memset(std::addressof(a), '\0', sizeof(WSADATA))
+    std::memset(std::addressof(wsadata), '\0', sizeof(WSADATA));
     auto err_wsa = WSAStartup(MAKEWORD(2, 0), std::addressof(wsadata));
     slassert(0 == err_wsa);
 #endif
@@ -60,12 +68,23 @@ int main() {
     auto err_init = libssh2_init(0);
     slassert(0 == err_init);
 
+// disable test on windows
+#ifdef STATICLIB_WINDOWS
+    bool win = true;
+    if (win) {
+        std::cout << "Test disabled on windows" << std::endl;
+        libssh2_exit();
+        return 0;
+    }
+#endif
+
     /* Ultra basic "connect to port 22 on localhost"
      * Your code is responsible for creating the socket establishing the
      * connection
      */
     auto sock = socket(AF_INET, SOCK_STREAM, 0);
 
+    // 127.0.0.1
     unsigned long hostaddr = htonl(0x7f000001);
     struct sockaddr_in sin;
     std::memset(std::addressof(sin), '\0', sizeof(struct sockaddr_in));
@@ -76,7 +95,7 @@ int main() {
     slassert(0 == err_conn);
 
     auto deferred_sock = sl::support::defer([&sock]() STATICLIB_NOEXCEPT {
-#ifdef WIN32
+#ifdef STATICLIB_WINDOWS
         closesocket(sock);
 #else
         close(sock);
