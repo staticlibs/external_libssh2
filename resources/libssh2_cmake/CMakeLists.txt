@@ -20,27 +20,6 @@ if ( NOT DEFINED ${PROJECT_NAME}_LOOKASIDE_DIR )
     set ( ${PROJECT_NAME}_LOOKASIDE_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../lookaside_libssh2 CACHE INTERNAL "" )
 endif ( )
 
-# standalone build
-if ( NOT DEFINED STATICLIB_TOOLCHAIN )
-    if ( NOT DEFINED ${PROJECT_NAME}_TOOLCHAIN )
-        if ( WIN32 )
-            if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-                set ( ${PROJECT_NAME}_TOOLCHAIN "windows_amd64_msvc" )
-            else ( )
-                set ( ${PROJECT_NAME}_TOOLCHAIN "windows_i386_msvc" )
-            endif ( )
-        elseif ( APPLE )
-            set ( ${PROJECT_NAME}_TOOLCHAIN "macosx_amd64_clang" )
-        elseif ( UNIX )
-            set ( ${PROJECT_NAME}_TOOLCHAIN "linux_amd64_gcc" )
-        else ( )
-            message ( FATAL_ERROR "Cannot determine toolchain to use, please specify [${PROJECT_NAME}_TOOLCHAIN]" )
-        endif ( )
-    endif ( )
-else ( )
-    set ( ${PROJECT_NAME}_TOOLCHAIN ${STATICLIB_TOOLCHAIN} )
-endif ( )
-
 # dependencies
 set ( ${PROJECT_NAME}_DEPS zlib openssl )
 external_libssh2_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
@@ -86,7 +65,7 @@ source_group ( "src" FILES ${${PROJECT_NAME}_SRC} )
 add_library ( ${PROJECT_NAME} STATIC 
         ${${PROJECT_NAME}_SRC} )
 target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/include_${${PROJECT_NAME}_TOOLCHAIN}
+        ${CMAKE_CURRENT_LIST_DIR}/include_${external_libssh2_TOOLCHAIN}
         ${${PROJECT_NAME}_LOOKASIDE_DIR}/include
         ${${PROJECT_NAME}_DEPS_PC_INCLUDE_DIRS} ) 
 target_compile_definitions ( ${PROJECT_NAME} PRIVATE -DHAVE_CONFIG_H )
