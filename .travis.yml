@@ -44,8 +44,8 @@ before_script:
   - git clone https://github.com/staticlibs/lookaside_openssl.git
   - git clone https://github.com/staticlibs/external_zlib.git
   - git clone https://github.com/staticlibs/lookaside_zlib.git
-  - git clone https://github.com/staticlibs/lookaside_libssh2.git
 # all platforms
+  - git clone https://github.com/staticlibs/lookaside_libssh2.git
   - git clone https://github.com/staticlibs/cmake.git
   - git clone https://github.com/staticlibs/staticlib_config.git
   - git clone https://github.com/staticlibs/staticlib_support.git
@@ -83,7 +83,7 @@ script:
     popd ;
     pushd build ;
     cmake ../external_libssh2/test -DCMAKE_BUILD_TYPE=Release ;
-    make ;
+    make all test;
     popd ;
 
     `# Android` ;

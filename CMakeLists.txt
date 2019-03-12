@@ -16,7 +16,7 @@ cmake_minimum_required ( VERSION 2.8.12 )
 
 # project setup
 project ( external_libssh2 C CXX )
-set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.4.3-1 )
+set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.4.3-2 )
 set ( ${PROJECT_NAME}_DESCRIPTION "libssh2 library build for Staticlibs" )
 set ( ${PROJECT_NAME}_URL https://github.com/staticlibs/external_libssh2.git )
 include ( ${CMAKE_CURRENT_LIST_DIR}/resources/macros.cmake )
